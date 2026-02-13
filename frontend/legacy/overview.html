@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrowdSense - Overview</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-logo">
+                    <div class="brand-icon"><i class="fa-solid fa-wifi"></i></div>
+                    <div class="brand-text">
+                        <div>CrowdSense</div>
+                        <div class="brand-sub">Campus Analytics</div>
+                    </div>
+                </div>
+            </div>
+            <nav class="nav-menu">
+                <a href="overview.html" class="nav-item active">
+                    <div class="nav-icon"><i class="fa-solid fa-table-columns"></i></div>
+                    <span>Overview</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <div class="nav-icon"><i class="fa-regular fa-map"></i></div>
+                    <span>Live Map</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <div class="nav-icon"><i class="fa-solid fa-chart-line"></i></div>
+                    <span>Reports</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <div class="nav-icon"><i class="fa-solid fa-layer-group"></i></div>
+                    <span>Heatmaps</span>
+                </a>
+
+                <div class="nav-separator"></div>
+
+                <a href="events.html" class="nav-item">
+                    <div class="nav-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <span>Event Management</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <div class="nav-icon"><i class="fa-solid fa-gear"></i></div>
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="nav-item" id="themeToggle">
+                    <div class="nav-icon"><i class="fa-solid fa-moon"></i></div>
+                    <span>Dark Mode</span>
+                </a>
+            </nav>
+
+            <!-- User Profile at Bottom -->
+            <div class="sidebar-footer">
+                <div class="user-profile-mini">
+                    <div class="avatar-img"><img src="https://i.pravatar.cc/150?img=68" alt="User"></div>
+                    <div class="user-info">
+                        <div class="user-name">Admin User</div>
+                        <div class="user-email">admin@campus.edu</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Wrapper -->
+        <div class="main-wrapper">
+            <!-- Top Header -->
+            <header class="top-bar">
+                <div class="header-title-group">
+                    <h2 class="page-title">CrowdSense Overview</h2>
+                    <div class="header-subtitle">
+                        <i class="fa-solid fa-circle text-success" style="font-size: 6px; margin-right: 6px;"></i> Live
+                        Dashboard • <span id="currentDate">Oct 24, 2023</span>
+                    </div>
+                </div>
+
+                <div class="header-actions">
+                    <div class="search-bar">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" id="regionSearch" placeholder="Search regions...">
+                    </div>
+                    <button class="btn btn-outline" id="exportBtn">
+                        <i class="fa-solid fa-download"></i> Export
+                    </button>
+                </div>
+            </header>
+
+            <!-- Scrollable Content -->
+            <main class="main-content">
+
+                <!-- Top Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon-wrapper icon-blue">
+                            <i class="fa-solid fa-router"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-header">
+                                <span class="stat-label">Total Devices</span>
+                                <span class="trend-badge positive"><i class="fa-solid fa-arrow-trend-up"></i>
+                                    +12%</span>
+                            </div>
+                            <div class="stat-value" id="statTotalDevices">1,245</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon-wrapper icon-purple">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-header">
+                                <span class="stat-label">Est. People Today</span>
+                                <span class="trend-badge positive"><i class="fa-solid fa-arrow-trend-up"></i> +5%</span>
+                            </div>
+                            <div class="stat-value" id="statEstPeople">950</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon-wrapper icon-green">
+                            <i class="fa-solid fa-wifi"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-header">
+                                <span class="stat-label">Live Devices</span>
+                                <span class="status-label text-success">Active</span>
+                            </div>
+                            <div class="stat-value" id="statLiveDevices">342</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon-wrapper icon-orange">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-header">
+                                <span class="stat-label">Current People</span>
+                                <span class="status-label text-warning">Moderate</span>
+                            </div>
+                            <div class="stat-value" id="statCurrentPeople">410</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Split View -->
+                <div class="dashboard-split">
+
+                    <!-- Live Map -->
+                    <div class="card map-card">
+                        <div class="card-header">
+                            <div class="header-left">
+                                <i class="fa-solid fa-map map-icon"></i>
+                                <h3 class="card-title">Campus Density Map</h3>
+                            </div>
+                            <div class="map-controls">
+                                <button class="control-btn" id="mapZoomIn"><i class="fa-solid fa-plus"></i></button>
+                                <button class="control-btn" id="mapZoomOut"><i class="fa-solid fa-minus"></i></button>
+                            </div>
+                        </div>
+                        <div class="map-container" id="mapContainer">
+                            <!-- Visual Mock of Map -->
+                            <div class="map-visual" id="mapVisual">
+                                <!-- Grid Lines -->
+                                <div class="map-grid"></div>
+
+                                <div class="map-center-label">300 × 300</div>
+
+                                <!-- Markers will be injected here by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Region Details -->
+                    <div class="card details-card" id="detailsPanel">
+                        <div class="card-header" style="position: relative;">
+                            <h3 class="card-title">Region Details</h3>
+                            <button class="icon-btn" id="detailsMenuBtn"><i class="fa-solid fa-ellipsis"></i></button>
+
+                            <!-- Dropdown Menu -->
+                            <div class="dropdown-menu" id="detailsDropdown">
+                                <a href="#" class="dropdown-item"
+                                    onclick="alert('Refreshed data for ' + document.getElementById('detailName').innerText)">
+                                    <i class="fa-solid fa-rotate-right"></i> Refresh Data
+                                </a>
+                                <a href="#" class="dropdown-item"
+                                    onclick="alert('Downloading report for ' + document.getElementById('detailName').innerText)">
+                                    <i class="fa-solid fa-file-arrow-down"></i> Export Report
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a href="#" class="dropdown-item text-danger"
+                                    onclick="alert('Alert configuration for ' + document.getElementById('detailName').innerText)">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> Configure Alerts
+                                </a>
+                            </div>
+                        </div>
+                        <div class="details-content">
+
+                            <div class="region-header">
+                                <div class="region-icon-box" id="detailIconBox">
+                                    <i class="fa-brands fa-readme" id="detailIcon"></i>
+                                </div>
+                                <div class="region-title-box">
+                                    <h4 id="detailName">Select a Region</h4>
+                                    <div class="congestion-status" id="detailStatus">
+                                        <!-- Status Text -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="details-stats-row">
+                                <div class="detail-stat">
+                                    <label>Capacity</label>
+                                    <div class="value" id="detailCapacity">-</div>
+                                </div>
+                                <div class="detail-stat">
+                                    <label>Peak Time</label>
+                                    <div class="value" id="detailPeak">-</div>
+                                </div>
+                            </div>
+
+                            <div class="chart-section">
+                                <div class="chart-title">LIVE TRENDS</div>
+                                <div class="chart-placeholder" id="detailChartContainer">
+                                    <!-- Chart bars will be injected here -->
+                                </div>
+                            </div>
+
+                            <div class="footer-stats">
+                                <div class="f-stat">
+                                    <span>Avg. Dwell Time</span>
+                                    <strong id="detailDwell">-</strong>
+                                </div>
+                                <div class="f-stat">
+                                    <span>Device Type</span>
+                                    <strong id="detailDevice">-</strong>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-full" onclick="alert('Full report not implemented yet')">View Full
+                                Report</button>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Bottom Trend Analysis -->
+                <div class="card trend-card">
+                    <div class="card-header border-bottom">
+                        <div class="header-text">
+                            <h3 class="card-title">Crowd Trend Analysis</h3>
+                            <p class="card-subtitle">Actual vs Predicted density over 12 hours</p>
+                        </div>
+                        <div class="toggle-pills">
+                            <button class="pill active" id="toggleAll">All</button>
+                            <button class="pill" id="toggleActual">Actual</button>
+                            <button class="pill" id="togglePredicted">Predicted</button>
+                        </div>
+                    </div>
+                    <div class="trend-chart-container">
+                        <canvas id="campusOverviewChart"></canvas>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="scripts.js"></script>
+</body>
+
+</html>

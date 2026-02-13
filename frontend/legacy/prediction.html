@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrowdSense - Predictions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- Sidebar (Same as overview, should be a component in real app) -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-logo">
+                    <i class="fa-solid fa-wifi"></i> CrowdSense
+                </div>
+            </div>
+            <nav class="nav-menu">
+                <a href="overview.html" class="nav-item">
+                    <i class="fa-solid fa-grid-2"></i> Overview
+                </a>
+                <a href="prediction.html" class="nav-item active">
+                    <i class="fa-solid fa-chart-line"></i> Predictions
+                </a>
+                <a href="events.html" class="nav-item">
+                    <i class="fa-solid fa-calendar-check"></i> Event Management
+                </a>
+                <a href="#" class="nav-item" onclick="alert('Settings feature coming soon')">
+                    <i class="fa-solid fa-gear"></i> Settings
+                </a>
+            </nav>
+            <div style="padding: 1.5rem; border-top: 1px solid var(--divider-color);">
+                <a href="index.html"
+                    style="display: flex; align-items: center; color: var(--danger-color); font-weight: 500;">
+                    <i class="fa-solid fa-sign-out-alt" style="margin-right: 1rem;"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- Top Header -->
+        <header class="top-bar">
+            <h2 class="page-title">Prediction Analytics</h2>
+            <div class="user-profile">
+                <!-- User Profile simplified for demo -->
+                <div class="avatar">A</div>
+                <span>Admin User</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Insight Cards -->
+            <div class="stats-grid">
+                <div class="card stat-card">
+                    <div class="stat-info">
+                        <span>Predicted (Next 30m)</span>
+                        <strong>1,245</strong>
+                    </div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-info">
+                        <span>Confidence Score</span>
+                        <strong style="color: var(--success-color);">94%</strong>
+                    </div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-info">
+                        <span>Peak Time Today</span>
+                        <strong>14:00</strong>
+                    </div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-info">
+                        <span>Anomaly Detection</span>
+                        <strong style="color: var(--success-color);">Normal</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Container -->
+            <div class="charts-container">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">24-Hour Crowd Forecast</h3>
+                    </div>
+                    <div class="chart-card">
+                        <canvas id="predictionMainChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Historical Comparison (Today vs Yesterday)</h3>
+                    </div>
+                    <div class="chart-card">
+                        <canvas id="comparisonChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+
+</html>

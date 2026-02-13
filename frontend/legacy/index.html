@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrowdSense - Login</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <i class="fa-solid fa-wifi"></i>
+            </div>
+            <h1 style="margin-bottom: 0.5rem;">CrowdSense</h1>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">Campus Crowd Monitoring System</p>
+
+            <form onsubmit="event.preventDefault(); window.location.href='overview.html'">
+                <div style="margin-bottom: 1.5rem; text-align: left;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Email Address</label>
+                    <input type="email" value="admin@campus.edu"
+                        style="width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem;">
+                </div>
+
+                <div style="margin-bottom: 2rem; text-align: left;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Password</label>
+                    <input type="password" value="password123"
+                        style="width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem;">
+                </div>
+
+                <button type="submit" class="btn" style="width: 100%;">Access Dashboard</button>
+            </form>
+
+            <p style="margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-secondary);">
+                &copy; 2026 CrowdSense Analytics
+            </p>
+        </div>
+    </div>
+
+</body>
+
+</html>

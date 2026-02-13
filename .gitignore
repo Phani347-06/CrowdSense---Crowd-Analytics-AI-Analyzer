@@ -1,0 +1,6 @@
+frontend/node_modules
+backend/__pycache__
+backend/live_stream.csv
+.DS_Store
+.vscode
+*.log

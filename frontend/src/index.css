@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply font-sans antialiased text-gray-900 bg-gray-100 dark:bg-slate-900 dark:text-gray-100 overflow-hidden h-screen;
+    }
+}
+
+/* Custom Marker Styles - better kept here due to complexity with pseudo-elements */
+.map-visual {
+    @apply w-full h-full relative cursor-grab bg-[length:20px_20px];
+    background-image: radial-gradient(theme('colors.slate.300') 1px, transparent 1px);
+    display: flex;
+    /* THIS MIGHT BE THE ISSUE - REMOVE IT OR CHANGE IT IF NOT INTENDED */
+    /* If markers are absolutely positioned based on percentages, flex shouldn't matter UNLESS 'align-items' stretches container? */
+    /* Let's remove flex from map-visual to fix the "clumped in middle" issue if it was centering the content box? */
+    /* No, wait. If markers are 'absolute' inside 'relative', flex on parent doesn't apply to them unless 'static'. */
+    /* However, if 'map-visual' itself had 0 height, that would be the issue. Flex causes items to stretch? */
+    /* Let's keep flex for centering the '300x300' label but ensure width/height are 100%. */
+    align-items: center;
+    justify-content: center;
+}
+
+.dark .map-visual {
+    background-image: radial-gradient(theme('colors.slate.700') 1px, transparent 1px);
+}
+
+.marker {
+    @apply absolute w-4 h-4 rounded-full -translate-x-1/2 -translate-y-1/2 cursor-pointer z-10 transition-transform duration-200;
+}
+
+.marker:hover .marker-center {
+    @apply ring-4 ring-offset-2 ring-primary bg-primary;
+}
+
+.marker.active .marker-center {
+    @apply border-primary scale-125;
+}
+
+.marker-center {
+    @apply w-full h-full rounded-full border-[3px] border-white shadow-md relative z-[2] bg-current box-border;
+}
+
+.marker-pulse {
+    @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full opacity-20 z-[1] bg-current animate-pulse;
+}
+
+.marker-amber {
+    @apply text-amber-500;
+}
+
+.marker-green {
+    @apply text-green-500;
+}
+
+.marker-red {
+    @apply text-red-500;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full hover:bg-gray-400 dark:bg-slate-700 dark:hover:bg-slate-600;
+}

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrowdSense - Event Management</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-logo">
+                    <div class="brand-icon"><i class="fa-solid fa-wifi"></i></div>
+                    <div class="brand-text">
+                        <div>CrowdSense</div>
+                        <div class="brand-sub">Campus Analytics</div>
+                    </div>
+                </div>
+            </div>
+            <nav class="nav-menu">
+                <a href="overview.html" class="nav-item">
+                    <div class="nav-icon"><i class="fa-solid fa-table-columns"></i></div>
+                    <span>Overview</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <div class="nav-icon"><i class="fa-regular fa-map"></i></div>
+                    <span>Live Map</span>
+                </a>
+                <a href="events.html" class="nav-item active">
+                    <div class="nav-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <span>Event Management</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <div class="nav-icon"><i class="fa-solid fa-chart-line"></i></div>
+                    <span>Analytics</span>
+                </a>
+
+                <div class="nav-separator"></div>
+
+                <a href="#" class="nav-item">
+                    <div class="nav-icon"><i class="fa-solid fa-gear"></i></div>
+                    <span>Global Settings</span>
+                </a>
+                <a href="#" class="nav-item" id="themeToggle">
+                    <div class="nav-icon"><i class="fa-solid fa-moon"></i></div>
+                    <span>Dark Mode</span>
+                </a>
+            </nav>
+
+            <!-- User Profile at Bottom -->
+            <div class="sidebar-footer">
+                <div class="user-profile-mini">
+                    <div class="avatar-img"><img src="https://i.pravatar.cc/150?img=68" alt="User"></div>
+                    <div class="user-info">
+                        <div class="user-name">Central Campus</div>
+                        <div class="user-email">Admin Console</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Wrapper -->
+        <div class="main-wrapper">
+            <!-- Top Header -->
+            <header class="top-bar">
+                <div class="header-title-group">
+                    <h2 class="page-title">Event Management & Alerts</h2>
+                    <div class="header-subtitle">
+                        Configure crowd density thresholds and review recent system notifications.
+                    </div>
+                </div>
+
+                <div class="header-actions">
+                    <button class="btn btn-outline" onclick="alert('Exporting Report...')">Export Report</button>
+                    <button class="btn btn-primary" onclick="alert('Changes Saved Successfully!')">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                    </button>
+                </div>
+            </header>
+
+            <!-- Scrollable Content -->
+            <main class="main-content">
+
+                <!-- Region Cards Container -->
+                <div class="events-grid" id="eventsGrid">
+                    <!-- Cards injected by JS -->
+                </div>
+
+                <!-- Global Alert Settings -->
+                <div class="card settings-card">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <i class="fa-solid fa-bell text-primary"></i>
+                            <h3 class="card-title">Global Alert Settings</h3>
+                        </div>
+                        <a href="#" class="link-text">Advanced Config</a>
+                    </div>
+                    <div class="settings-body">
+                        <div class="setting-group">
+                            <label>Admin Email Notifications</label>
+                            <div class="input-with-icon">
+                                <i class="fa-regular fa-envelope"></i>
+                                <input type="email" value="admin@crowdsense.edu" class="form-input">
+                            </div>
+                            <span class="input-help">Recipients for critical threshold alerts.</span>
+                        </div>
+
+                        <div class="setting-group">
+                            <label>Security SMS Alerts</label>
+                            <div class="input-with-icon">
+                                <i class="fa-solid fa-comment-sms"></i>
+                                <input type="text" value="+1 (555) 012-3456" class="form-input">
+                            </div>
+                            <span class="input-help">Direct line to campus security dispatch.</span>
+                        </div>
+
+                        <div class="setting-action">
+                            <button class="btn btn-outline btn-full-width" onclick="alert('Test Alert Sent!')">
+                                <i class="fa-solid fa-paper-plane"></i> Send Test Alert
+                            </button>
+                            <span class="input-help text-center d-block mt-1">Verifies communication channels.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alert History -->
+                <div class="card history-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Alert History</h3>
+                        <div class="header-actions-sm">
+                            <div class="search-sm">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" placeholder="Filter alerts...">
+                            </div>
+                            <button class="btn btn-sm btn-outline"><i class="fa-solid fa-filter"></i> Filter</button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="alert-table">
+                            <thead>
+                                <tr>
+                                    <th>TIMESTAMP</th>
+                                    <th>REGION</th>
+                                    <th>LIMIT</th>
+                                    <th>ACTUAL COUNT</th>
+                                    <th>STATUS</th>
+                                    <th class="text-right">ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="alertHistoryBody">
+                                <!-- Rows injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination-footer">
+                        <span>Showing 1 to 4 of 24 results</span>
+                        <div class="pagination-controls">
+                            <button class="page-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button class="page-btn active">1</button>
+                            <button class="page-btn">2</button>
+                            <button class="page-btn">3</button>
+                            <button class="page-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="scripts.js"></script>
+</body>
+
+</html>
