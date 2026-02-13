@@ -160,11 +160,11 @@ const Dashboard = () => {
     useEffect(() => {
         const triggerSearch = async () => {
             if (searchQuery.trim().length > 0) {
-                const query = searchQuery.toLowerCase().trim();
-                const match = regions.find(r =>
-                    r.name.toLowerCase().includes(query) ||
-                    r.id.toLowerCase().includes(query)
-                );
+                const queryWords = searchQuery.toLowerCase().trim().split(/\s+/);
+                const match = regions.find(r => {
+                    const searchable = (r.name + ' ' + r.id).toLowerCase();
+                    return queryWords.every(word => searchable.includes(word));
+                });
 
                 if (match) {
                     console.log("Dashboard: Match found, entering Focus View", match.name);

@@ -1026,12 +1026,12 @@ def get_forecast():
         if hour is None or hour < 0 or hour > 23:
             return jsonify({"error": "Invalid hour (0-23 required)"}), 400
             
-        t_mult = time_multiplier(hour, minute)
+        t_mult = get_time_factor(hour, minute, datetime.datetime.now().weekday())
         forecast_state = {}
         
         for zid, config in ZONES.items():
             base = config["base_density"]
-            z_mult = zonal_multiplier(config.get("type"), t_mult, hour)
+            z_mult = t_mult * get_zone_modifier(config.get("type"), hour, minute)
             
             # Synthetic state for future time
             sim_count = int(base * z_mult)
@@ -1093,8 +1093,8 @@ def get_zone_forecast_24h(zone_id):
         full_day = []
         
         for h in range(24):
-            t_mult = time_multiplier(h, 0)
-            z_mult = zonal_multiplier(config.get("type"), t_mult, h)
+            t_mult = get_time_factor(h, 0, datetime.datetime.now().weekday())
+            z_mult = t_mult * get_zone_modifier(config.get("type"), h, 0)
             # Predicted value (integer)
             sim_count = int(base * z_mult)
             
@@ -1167,14 +1167,14 @@ def seed_trend_data():
     for i in range(120, 0, -1):
         past_time = now - datetime.timedelta(minutes=i)
         h = past_time.hour
-        t_mult = time_multiplier(h, past_time.minute)
+        t_mult = get_time_factor(h, past_time.minute, past_time.weekday())
         zones_snap = {}
         total_act = 0
         total_pred = 0
                 
         for zid, config in ZONES.items():
             # Apply zonal behavioral logic
-            z_mult = zonal_multiplier(config.get("type"), t_mult, h)
+            z_mult = t_mult * get_zone_modifier(config.get("type"), h, past_time.minute)
             
             # Base simulated density with some noise
             target_density = int(config["base_density"] * z_mult * random.uniform(0.95, 1.05))

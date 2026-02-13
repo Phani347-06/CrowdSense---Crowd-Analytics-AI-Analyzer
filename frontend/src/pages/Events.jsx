@@ -354,37 +354,6 @@ const Events = () => {
                                 </div>
                             </div>
 
-                            {/* Admin: n8n Automation setup */}
-                            <div className="bg-white dark:bg-slate-800 rounded-[32px] p-8 border border-gray-100 dark:border-slate-700 shadow-sm">
-                                <div className="flex items-center gap-3 mb-6">
-                                    <div className="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-900/20 text-orange-600 flex items-center justify-center">
-                                        <Zap size={20} />
-                                    </div>
-                                    <h3 className="text-lg font-black text-gray-900 dark:text-white">n8n Automation</h3>
-                                </div>
-                                <div className="space-y-4">
-                                    <div className="p-4 bg-gray-50 dark:bg-slate-900 rounded-2xl border border-dashed border-gray-200 dark:border-slate-700">
-                                        <p className="text-[11px] text-gray-500 dark:text-gray-400 font-bold uppercase mb-2">Webhook Connector</p>
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                                            <span className="text-xs font-black text-gray-700 dark:text-gray-200">Listening on :5678</span>
-                                        </div>
-                                    </div>
-                                    <button
-                                        onClick={() => {
-                                            navigator.clipboard.writeText(JSON.stringify(N8N_WORKFLOW, null, 2));
-                                            setMsg({ type: 'success', text: 'Workflow JSON copied!' });
-                                            setTimeout(() => setMsg({ type: '', text: '' }), 3000);
-                                        }}
-                                        className="w-full py-4 bg-slate-900 dark:bg-slate-700 text-white rounded-2xl font-black text-xs hover:bg-black transition-all flex items-center justify-center gap-2"
-                                    >
-                                        <Copy size={16} /> COPY WORKFLOW JSON
-                                    </button>
-                                    <p className="text-[10px] text-center text-gray-400 italic leading-relaxed">
-                                        Imports this workflow into n8n to enable automatic email alerts for approved event organizers when capacity is reached.
-                                    </p>
-                                </div>
-                            </div>
                         </>
                     ) : (
                         <>
