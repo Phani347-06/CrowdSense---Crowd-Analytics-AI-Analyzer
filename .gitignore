@@ -4,3 +4,6 @@ backend/live_stream.csv
 .DS_Store
 .vscode
 *.log
+.env
+**/env/
+**/.env
