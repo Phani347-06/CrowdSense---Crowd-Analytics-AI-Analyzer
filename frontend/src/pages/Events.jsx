@@ -88,7 +88,13 @@ const Events = () => {
 
     // Form States
     const [alertForm, setAlertForm] = useState({ title: '', message: '', level: 'WARNING', zone_id: 'lib' });
-    const [regForm, setRegForm] = useState({ event_name: '', zone_id: 'lib', contact_email: user.email });
+    const [regForm, setRegForm] = useState({
+        event_name: '',
+        zone_id: 'lib',
+        contact_email: user.email,
+        start_time: '',
+        end_time: ''
+    });
     const [loading, setLoading] = useState(false);
     const [msg, setMsg] = useState({ type: '', text: '' });
 
@@ -123,8 +129,10 @@ const Events = () => {
                                 status: incoming.risk_level,
                                 cri: incoming.cri,
                                 predicted: incoming.predicted,
-                                surge: incoming.surge
+                                surge: incoming.surge,
+                                active_event: incoming.active_event
                             } : region;
+
                         }));
                     }
                 }
@@ -287,8 +295,10 @@ const Events = () => {
                                             className="px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 dark:bg-slate-900 outline-none text-sm font-bold"
                                             value={alertForm.zone_id} onChange={e => setAlertForm({ ...alertForm, zone_id: e.target.value })}
                                         >
+                                            <option value="all">🌏 All Areas</option>
                                             {regions.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
                                         </select>
+
                                         <select
                                             className="px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 dark:bg-slate-900 outline-none text-sm font-bold"
                                             value={alertForm.level} onChange={e => setAlertForm({ ...alertForm, level: e.target.value })}
@@ -327,11 +337,17 @@ const Events = () => {
                                                 </div>
                                                 <p className="text-sm font-black text-gray-800 dark:text-gray-200 truncate">{r.user_email}</p>
                                                 <div className="flex justify-between items-center mt-2">
-                                                    <p className="text-[10px] text-gray-500 font-bold uppercase">Zone: {r.zone_id}</p>
+                                                    <div className="flex flex-col">
+                                                        <p className="text-[10px] text-gray-500 font-bold uppercase">Zone: {r.zone_id}</p>
+                                                        {r.start_time && r.end_time && (
+                                                            <p className="text-[9px] text-blue-500 font-bold">{r.start_time} - {r.end_time}</p>
+                                                        )}
+                                                    </div>
                                                     <span className={`text-[8px] font-black px-1.5 py-0.5 rounded-full ${r.status === 'APPROVED' ? 'bg-green-100 text-green-600' : r.status === 'REJECTED' ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-600'}`}>
                                                         {r.status || 'PENDING'}
                                                     </span>
                                                 </div>
+
                                                 {r.status === 'PENDING' && (
                                                     <div className="flex gap-2 mt-3">
                                                         <button
@@ -392,6 +408,25 @@ const Events = () => {
                                             {regions.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
                                         </select>
                                     </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Start Time</label>
+                                            <input
+                                                type="time"
+                                                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 dark:bg-slate-900 outline-none focus:border-blue-500 text-sm"
+                                                value={regForm.start_time} onChange={e => setRegForm({ ...regForm, start_time: e.target.value })} required
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">End Time</label>
+                                            <input
+                                                type="time"
+                                                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 dark:bg-slate-900 outline-none focus:border-blue-500 text-sm"
+                                                value={regForm.end_time} onChange={e => setRegForm({ ...regForm, end_time: e.target.value })} required
+                                            />
+                                        </div>
+                                    </div>
+
                                     <button
                                         type="submit" disabled={loading}
                                         className="w-full py-4 bg-blue-600 text-white rounded-2xl font-black shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition-all"
@@ -422,7 +457,15 @@ const Events = () => {
                                                     <span className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest">{r.event_name}</span>
                                                     <span className="text-[10px] text-gray-400 font-mono">{new Date(r.timestamp).toLocaleDateString()}</span>
                                                 </div>
-                                                <p className="text-sm font-black text-gray-800 dark:text-gray-100">Zone: {regions.find(reg => reg.id === r.zone_id)?.name || r.zone_id}</p>
+                                                <div className="flex justify-between items-center">
+                                                    <p className="text-sm font-black text-gray-800 dark:text-gray-100">Zone: {regions.find(reg => reg.id === r.zone_id)?.name || r.zone_id}</p>
+                                                    {r.start_time && r.end_time && (
+                                                        <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2 py-0.5 rounded-md">
+                                                            {r.start_time} - {r.end_time}
+                                                        </span>
+                                                    )}
+                                                </div>
+
                                                 <div className="flex items-center justify-between mt-2">
                                                     <p className="text-[10px] text-gray-500">Alerts to: <span className="font-bold text-gray-700 dark:text-gray-300">{r.contact_email}</span></p>
                                                     <span className={`flex items-center gap-1 text-[9px] font-black px-2 py-0.5 rounded-full ${r.status === 'APPROVED' ? 'text-green-600 bg-green-100 dark:bg-green-900/20' :
@@ -459,11 +502,25 @@ const Events = () => {
                                 <div key={region.id} className="bg-white dark:bg-slate-800 rounded-[32px] p-6 border border-gray-100 dark:border-slate-700/50 shadow-sm hover:shadow-xl transition-all h-full flex flex-col">
                                     <div className="flex justify-between items-start mb-6">
                                         <div>
-                                            <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest ${statusColor}`}>
-                                                {region.status}
-                                            </span>
+                                            <div className="flex gap-2">
+                                                <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest ${statusColor}`}>
+                                                    {region.status}
+                                                </span>
+                                                {region.active_event && (
+                                                    <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+                                                        OCCUPIED
+                                                    </span>
+                                                )}
+                                            </div>
                                             <h3 className="text-lg font-black text-gray-900 dark:text-white mt-1">{region.name}</h3>
+                                            {region.active_event && (
+                                                <p className="text-[10px] font-bold text-gray-500 mt-0.5">
+                                                    Event: <span className="text-blue-600 dark:text-blue-400">{region.active_event.event_name}</span> {region.active_event.timing && region.active_event.timing !== 'None - None' && `(${region.active_event.timing})`}
+                                                </p>
+                                            )}
+
                                         </div>
+
                                         <div className={`p-2 rounded-lg ${isCritical ? 'bg-red-500 text-white' : 'bg-slate-100 dark:bg-slate-900 text-slate-400'}`}>
                                             <Users size={16} />
                                         </div>

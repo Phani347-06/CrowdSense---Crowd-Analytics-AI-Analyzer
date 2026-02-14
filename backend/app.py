@@ -18,6 +18,8 @@ import requests
 from pymongo import MongoClient
 import json
 from crowd_flow import flow_engine
+from config import Config
+from services import alert_engine
 
 # ─────────────────────────────────────────────
 # Flask App Setup
@@ -79,6 +81,8 @@ def register_event():
         "contact_email": data.get('contact_email'),
         "event_name": event_name,
         "zone_id": data.get('zone_id'),
+        "start_time": data.get('start_time'),
+        "end_time": data.get('end_time'),
         "status": "PENDING",
         "timestamp": datetime.datetime.now()
     }
@@ -111,12 +115,25 @@ def update_registration_status():
         # Maybe email was stored differently, try broader match
         query2 = {"event_name": event_name, "$or": [{"user_email": email}, {"contact_email": email}]}
         result2 = registrations_collection.update_many(query2, {"$set": {"status": new_status}})
-        print(f"DEBUG UPDATE RETRY: matched={result2.matched_count}, modified={result2.modified_count}")
-        
         if result2.matched_count == 0:
             return jsonify({"error": "Registration not found"}), 404
-    
+
+    # Trigger Email Notification AFTER successful DB update
+    try:
+        # Find the registration to get the zone_id and event_name
+        reg = registrations_collection.find_one({"user_email": email, "event_name": event_name})
+        if reg:
+            zone_id = reg.get('zone_id', 'Unknown')
+            zone_name = ZONES.get(zone_id, {}).get('name', zone_id)
+            s_time = reg.get('start_time')
+            e_time = reg.get('end_time')
+            alert_engine.send_status_update_notification(email, event_name, zone_name, new_status, start_time=s_time, end_time=e_time)
+
+    except Exception as e:
+        print(f"⚠️ Failed to send status update email: {e}")
+
     return jsonify({"message": f"Registration {new_status}"}), 200
+
 
 @app.route('/api/events/my-registrations/<email>', methods=['GET'])
 def get_my_registrations(email):
@@ -133,10 +150,38 @@ def get_my_registrations(email):
     
     for r in regs:
         r.pop('_id')
-        if isinstance(r.get('timestamp'), datetime.datetime):
-            r['timestamp'] = r['timestamp'].isoformat()
+        if 'timestamp' in r:
+            r['timestamp'] = r['timestamp'].strftime("%I:%M %p")
             
-    return jsonify(regs)
+    return jsonify(regs), 200
+
+# ─────────────────────────────────────────────
+# Email Alert Testing Endpoint
+# ─────────────────────────────────────────────
+@app.route('/api/alerts/test-organizer', methods=['POST'])
+def test_organizer_alert():
+    """Manual trigger to test email automation for a specific organizer."""
+    data = request.json
+    target_email = data.get('email')
+    
+    if not target_email:
+        return jsonify({"error": "Organizer email is required"}), 400
+        
+    # Mock data for testing
+    test_data = {
+        "name": "Test Zone",
+        "cri": 88,
+        "count": 420,
+        "capacity": 350,
+        "growth": 0.35,
+        "forecast": "510 (Critical)"
+    }
+    
+    try:
+        alert_engine.trigger_alert(target_email, "test_zone", test_data, "Demo Event 2026")
+        return jsonify({"message": f"Test alert dispatched to {target_email}. Check inbox/spam."}), 200
+    except Exception as e:
+        return jsonify({"error": f"Failed to send test alert: {str(e)}"}), 500
 
 @app.route('/api/events/registrations', methods=['GET'])
 def get_registrations():
@@ -181,6 +226,25 @@ def update_zone_capacity():
             live_data[zone_id]['status'] = new_risk
         
         print(f"⚙️ Config & Live: {ZONES[zone_id]['name']} capacity updated to {new_capacity} (CRI Refreshed)")
+        
+        # Notification: Find the organizer and tell them the capacity changed
+        try:
+            active_reg = registrations_collection.find_one({"zone_id": zone_id, "status": "APPROVED"})
+            if active_reg:
+                email = active_reg.get('user_email')
+                event_name = active_reg.get('event_name')
+                zone_name = ZONES[zone_id]['name']
+                s_time = active_reg.get('start_time')
+                e_time = active_reg.get('end_time')
+                alert_engine.send_status_update_notification(
+                    email, event_name, zone_name, "UPDATED", 
+                    message=f"Important Update: The approved capacity for your event '{event_name}' in {zone_name} ({s_time} - {e_time}) has been adjusted to {new_capacity} by the administrator.",
+                    start_time=s_time, end_time=e_time
+                )
+
+        except Exception as e:
+            print(f"⚠️ Failed to send capacity update email: {e}")
+
         return jsonify({
             "message": f"Capacity for {ZONES[zone_id]['name']} updated to {new_capacity}",
             "zone_id": zone_id,
@@ -211,10 +275,37 @@ def send_manual_alert():
     alerts.insert(0, alert)
     if len(alerts) > 50: alerts = alerts[:50]
     
-    # Trigger n8n for manual alerts too
-    if alert["level"] in ["WARNING", "CRITICAL"]:
-        pass # Manual n8n removed. TODO: Add to Automation Agent manual handler if needed.
-    
+    # Trigger Email Notification for targeted organizers
+    try:
+        zone_id = data.get('zone_id')
+        
+        # Logic: Find approved registrations
+        if zone_id == "all":
+            # BROADCAST TO EVERYONE: Every active organizer on campus
+            active_regs = list(registrations_collection.find({"status": "APPROVED"}))
+            display_zone = "Campus-wide Broadcast"
+        else:
+            # Targeted Zone Broadcast
+            active_regs = list(registrations_collection.find({"zone_id": zone_id, "status": "APPROVED"}))
+            display_zone = ZONES.get(zone_id, {}).get('name', zone_id)
+            
+        for reg in active_regs:
+            email = reg.get('user_email')
+            event_name = reg.get('event_name')
+            target_zone_name = ZONES.get(reg.get('zone_id'), {}).get('name', reg.get('zone_id'))
+            
+            from services import email_service
+            email_service.send_event_alert_email(email, {
+                "event_name": event_name,
+                "zone_name": target_zone_name,
+                "alert_type": "BROADCAST",
+                "title": f"[URGENT] {data.get('title')}",
+                "message": f"Global Campus Alert for {display_zone}:\n\n{data.get('message')}"
+            })
+    except Exception as e:
+        print(f"⚠️ Broadcast Email Failed: {e}")
+
+
     return jsonify({"message": "Alert broadcasted successfully"}), 201
 
 @app.route('/api/alerts/history', methods=['GET'])
@@ -793,6 +884,57 @@ def simulator_loop():
                 else:
                     status_color = "text-green-500"
 
+                # ── Organizer-Driven Email Automation & Occupancy Tracking ──
+                # Check for approved registrations in this zone
+                zone_occupied_by = None
+                try:
+                    current_time_str = now.strftime("%H:%M")
+                    active_regs = list(registrations_collection.find({
+                        "zone_id": zone_id,
+                        "status": "APPROVED"
+                    }))
+                    
+                    for active_registration in active_regs:
+                        s_time = active_registration.get('start_time')
+                        e_time = active_registration.get('end_time')
+                        
+                        is_active_now = True
+                        if s_time and e_time:
+                            is_active_now = s_time <= current_time_str <= e_time
+                            
+                        if not is_active_now:
+                            continue
+                        
+                        # Mark room as occupied
+                        zone_occupied_by = {
+                            "event_name": active_registration.get('event_name'),
+                            "organizer": active_registration.get('user_email'),
+                            "timing": f"{s_time} - {e_time}"
+                        }
+
+                        organizer_email = active_registration.get('user_email')
+                        event_name = active_registration.get('event_name', 'Campus Event')
+                        
+                        # Fetch user from DB to check role
+                        user_doc = users_collection.find_one({"email": organizer_email})
+                        user_role = user_doc.get('role', 'event_organizer') if user_doc else 'event_organizer'
+                        
+                        # Evaluation logic inside alert_engine
+                        zone_metrics = {
+                            "name": config["name"],
+                            "cri": cri,
+                            "count": device_count,
+                            "capacity": config["capacity"],
+                            "growth": growth_rate,
+                            "forecast": f"{int(pred_density)} (30m)"
+                        }
+                        
+                        if alert_engine.should_trigger(zone_id, zone_metrics, active_registration, user_role):
+                            print(f"📢 ALERT ENGINE: Triggering email for {organizer_email} at {zone_id} ({s_time}-{e_time})")
+                            alert_engine.trigger_alert(organizer_email, zone_id, zone_metrics, event_name)
+                except Exception as eval_err:
+                    print(f"⚠️ Alert Evaluation Failed for {zone_id}: {eval_err}")
+
                 # ── Store Result ──
                 new_state[zone_id] = {
                     "id": zone_id,
@@ -808,11 +950,11 @@ def simulator_loop():
                     "flows": flows,
                     "status": risk_level,
                     "statusColor": status_color,
-                    "last_updated": now.strftime("%H:%M:%S")
+                    "last_updated": now.strftime("%H:%M:%S"),
+                    "active_event": zone_occupied_by
                 } 
 
-
-                # ── 8. Alert Generation ──
+                # ── 8. Alert Generation (Global Feed) ──
                 if cri >= 85:
                     # Find safest alternative zone
                     other_zones = [z for z in ZONES if z != zone_id]
@@ -834,6 +976,9 @@ def simulator_loop():
                         "message": f"🟠 WARNING: {config['name']} at CRI {cri} — approaching capacity.",
                         "timestamp": now.strftime("%H:%M:%S")
                     })
+
+
+
                 
                 # ── Automation Agent Integration ──
                 # Gather data for the agent
