@@ -6,6 +6,8 @@ load_dotenv()
 
 from pymongo import MongoClient
 import datetime
+import certifi
+ca = certifi.where()
 
 # Step 2: Load MONGO_URI
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
@@ -16,7 +18,7 @@ if not MONGO_URI:
 
 # Step 3: Singleton-like connection setup
 try:
-    client = MongoClient(MONGO_URI)
+    client = MongoClient(MONGO_URI, tlsCAFile=ca)
     db = client["crowdsense"]
     
     # Collections

@@ -18,6 +18,8 @@ from dotenv import load_dotenv
 load_dotenv()
 import requests
 from pymongo import MongoClient
+import certifi
+ca = certifi.where()
 import json
 from crowd_flow import flow_engine
 from config import Config
@@ -36,7 +38,8 @@ automation_agent = AutomationAgent()
 # MongoDB Setup
 try:
     mongo_uri = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
-    client = MongoClient(mongo_uri, serverSelectionTimeoutMS=2000)
+    # Use certifi for Atlas SSL verification
+    client = MongoClient(mongo_uri, tlsCAFile=ca, serverSelectionTimeoutMS=5000)
     db = client['crowdsense']
     
     # Collections
@@ -1398,5 +1401,6 @@ if __name__ == '__main__':
     print("    GET /api/forecast       — Future state prediction")
     print("=" * 60)
 
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    port = int(os.getenv("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
 
