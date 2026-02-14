@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Send, Users, ShieldAlert, Calendar, History, Copy, Zap } from 'lucide-react';
+import API_BASE_URL from '../apiConfig';
+
 
 const N8N_WORKFLOW = {
     "name": "CrowdSense Email Automation",
@@ -110,10 +112,10 @@ const Events = () => {
         const fetchData = async () => {
             try {
                 const [liveRes, histRes, regRes, myRes] = await Promise.all([
-                    fetch('http://127.0.0.1:5000/api/live'),
-                    isAdmin ? fetch('http://127.0.0.1:5000/api/alerts/history') : Promise.resolve(null),
-                    isAdmin ? fetch('http://127.0.0.1:5000/api/events/registrations') : Promise.resolve(null),
-                    !isAdmin ? fetch(`http://127.0.0.1:5000/api/events/my-registrations/${user.email}`) : Promise.resolve(null)
+                    fetch(`${API_BASE_URL}/api/live`),
+                    isAdmin ? fetch(`${API_BASE_URL}/api/alerts/history`) : Promise.resolve(null),
+                    isAdmin ? fetch(`${API_BASE_URL}/api/events/registrations`) : Promise.resolve(null),
+                    !isAdmin ? fetch(`${API_BASE_URL}/api/events/my-registrations/${user.email}`) : Promise.resolve(null)
                 ]);
 
                 if (liveRes.ok) {
@@ -164,7 +166,7 @@ const Events = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const res = await fetch('http://127.0.0.1:5000/api/alerts/send', {
+            const res = await fetch(`${API_BASE_URL}/api/alerts/send`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(alertForm)
@@ -185,7 +187,7 @@ const Events = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const res = await fetch('http://127.0.0.1:5000/api/events/register', {
+            const res = await fetch(`${API_BASE_URL}/api/events/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -208,7 +210,7 @@ const Events = () => {
         ));
 
         try {
-            const res = await fetch('http://127.0.0.1:5000/api/events/update-status', {
+            const res = await fetch(`${API_BASE_URL}/api/events/update-status`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, event_name: eventName, status })
@@ -237,7 +239,7 @@ const Events = () => {
         setRegions(prev => prev.map(r => r.id === zone_id ? { ...r, capacity: parseInt(newCap) } : r));
 
         try {
-            await fetch('http://127.0.0.1:5000/api/zones/capacity', {
+            await fetch(`${API_BASE_URL}/api/zones/capacity`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ zone_id, capacity: parseInt(newCap) })

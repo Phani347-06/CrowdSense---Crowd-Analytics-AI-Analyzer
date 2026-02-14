@@ -5,3 +5,7 @@ scikit-learn
 pandas
 numpy
 xgboost
+pymongo
+dnspython
+requests
+gunicorn

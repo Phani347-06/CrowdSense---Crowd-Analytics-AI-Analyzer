@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Wifi, Key, Mail, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import API_BASE_URL from '../apiConfig';
+
 
 const Login = () => {
     const navigate = useNavigate();
@@ -31,7 +33,7 @@ const Login = () => {
         if (isReset) endpoint = '/api/auth/reset-password';
 
         try {
-            const response = await fetch(`http://127.0.0.1:5000${endpoint}`, {
+            const response = await fetch(`${API_BASE_URL}${endpoint}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })

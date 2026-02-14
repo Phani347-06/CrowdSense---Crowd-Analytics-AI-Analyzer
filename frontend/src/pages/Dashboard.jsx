@@ -3,6 +3,8 @@ import { useOutletContext } from 'react-router-dom';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { TrendingUp, Users, Wifi, MapPin, Plus, Minus, RotateCw, FileText, Settings, User, Brain, Shield } from 'lucide-react';
+import API_BASE_URL from '../apiConfig';
+
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
@@ -99,12 +101,12 @@ const Dashboard = () => {
         const fetchLiveData = async () => {
             try {
                 const url = isTimeTravelActive
-                    ? `http://127.0.0.1:5000/api/forecast?hour=${timeTravelValue}&minute=0`
-                    : 'http://127.0.0.1:5000/api/live';
+                    ? `${API_BASE_URL}/api/forecast?hour=${timeTravelValue}&minute=0`
+                    : `${API_BASE_URL}/api/live`;
 
                 const [liveRes, summaryRes] = await Promise.all([
                     fetch(url),
-                    fetch('http://127.0.0.1:5000/api/summary')
+                    fetch(`${API_BASE_URL}/api/summary`)
                 ]);
 
                 if (liveRes.ok) {
@@ -176,7 +178,7 @@ const Dashboard = () => {
 
                     try {
                         // Optimized: One batch call for all 24 hours
-                        const res = await fetch(`http://127.0.0.1:5000/api/forecast/24h/${match.id}`);
+                        const res = await fetch(`${API_BASE_URL}/api/forecast/24h/${match.id}`);
                         if (res.ok) {
                             const data = await res.json();
                             setLocalTrend(data);
@@ -212,7 +214,7 @@ const Dashboard = () => {
         const fetchCurrentTrend = async () => {
             if (isSearchView) return; // Full day view handles its own data
             try {
-                const res = await fetch(`http://127.0.0.1:5000/api/trend/${selectedRegion.id}`);
+                const res = await fetch(`${API_BASE_URL}/api/trend/${selectedRegion.id}`);
                 if (res.ok) {
                     const data = await res.json();
                     setLocalTrend(data);
@@ -237,7 +239,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchTrend = async () => {
             try {
-                const res = await fetch('http://127.0.0.1:5000/api/trend');
+                const res = await fetch(`${API_BASE_URL}/api/trend`);
                 if (res.ok) {
                     const data = await res.json();
                     if (data && data.length > 0) {

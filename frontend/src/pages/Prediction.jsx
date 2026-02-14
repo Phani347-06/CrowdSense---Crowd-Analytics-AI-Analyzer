@@ -13,6 +13,8 @@ import {
 } from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
 import { TrendingUp, Activity, Clock, AlertTriangle } from 'lucide-react';
+import API_BASE_URL from '../apiConfig';
+
 
 ChartJS.register(
     CategoryScale,
@@ -36,8 +38,8 @@ const Prediction = () => {
         const fetchData = async () => {
             try {
                 const [liveRes, alertRes] = await Promise.all([
-                    fetch('http://127.0.0.1:5000/api/live'),
-                    fetch('http://127.0.0.1:5000/api/alerts')
+                    fetch(`${API_BASE_URL}/api/live`),
+                    fetch(`${API_BASE_URL}/api/alerts`)
                 ]);
                 if (liveRes.ok) {
                     const result = await liveRes.json();
@@ -103,7 +105,7 @@ const Prediction = () => {
     useEffect(() => {
         const fetchTrend = async () => {
             try {
-                const res = await fetch('http://127.0.0.1:5000/api/trend');
+                const res = await fetch(`${API_BASE_URL}/api/trend`);
                 if (res.ok) {
                     const data = await res.json();
                     if (data && data.length > 0) {
