@@ -99,5 +99,3 @@ Ensure these are set in your local `.env` and **Render Dashboard**:
 
 ---
 
-## 📝 License
-Proprietary — Developed for Campus Ideathon by **Phani Sri Southu**.
