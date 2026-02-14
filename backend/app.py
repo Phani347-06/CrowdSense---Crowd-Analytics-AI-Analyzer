@@ -38,8 +38,18 @@ automation_agent = AutomationAgent()
 # MongoDB Setup
 try:
     mongo_uri = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
-    # Use certifi for Atlas SSL verification
-    client = MongoClient(mongo_uri, tlsCAFile=ca, serverSelectionTimeoutMS=5000)
+    
+    # Robust configuration for Atlas
+    if "mongodb+srv" in mongo_uri:
+        client = MongoClient(
+            mongo_uri,
+            tlsCAFile=ca,
+            serverSelectionTimeoutMS=5000,
+            tls=True
+        )
+    else:
+        client = MongoClient(mongo_uri, serverSelectionTimeoutMS=2000)
+        
     db = client['crowdsense']
     
     # Collections

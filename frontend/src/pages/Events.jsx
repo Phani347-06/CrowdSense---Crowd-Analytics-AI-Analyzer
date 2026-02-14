@@ -255,7 +255,7 @@ const Events = () => {
             <div className="flex justify-between items-end">
                 <div>
                     <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">
-                        {isAdmin ? 'Crisis Control Center' : 'Event Participation'}
+                        {isAdmin ? 'Event Control System' : 'Event Participation'}
                     </h2>
                     <p className="text-gray-500 dark:text-gray-400 mt-1">
                         {isAdmin ? 'Manage campus risk and view participant registrations.' : 'Browse and register for upcoming campus events and workshops.'}

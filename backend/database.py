@@ -18,7 +18,15 @@ if not MONGO_URI:
 
 # Step 3: Singleton-like connection setup
 try:
-    client = MongoClient(MONGO_URI, tlsCAFile=ca)
+    if "mongodb+srv" in MONGO_URI:
+        client = MongoClient(
+            MONGO_URI,
+            tlsCAFile=ca,
+            serverSelectionTimeoutMS=5000,
+            tls=True
+        )
+    else:
+        client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=2000)
     db = client["crowdsense"]
     
     # Collections

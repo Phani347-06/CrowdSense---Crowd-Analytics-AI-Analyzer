@@ -510,7 +510,7 @@ const Dashboard = () => {
                 <p className="text-gray-500 dark:text-gray-400">Real-time crowd analytics and ML predictions.</p>
             </div>
             {/* Top Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative">
                 <StatCard
                     icon={Wifi} color="blue" title={isTimeTravelActive ? "Predicted Devices" : "Total Devices"} value={summary.total_people ? summary.total_people.toLocaleString() : '—'} trend={isTimeTravelActive ? 'Forecast' : (summary.total_people > 0 ? 'Live' : null)} isPositive={true}
                     details={[{ label: 'Avg Signal', value: '-65 dBm' }, { label: 'Zones', value: regions.length }]}
@@ -518,10 +518,6 @@ const Dashboard = () => {
                 <StatCard
                     icon={Users} color="purple" title={isTimeTravelActive ? "Predicted People" : "Est. People"} value={summary.total_devices ? summary.total_devices.toLocaleString() : '—'} trend={isTimeTravelActive ? 'Simulated' : (summary.total_devices > 0 ? '+12%' : null)} isPositive={true}
                     details={[{ label: 'Avg Dwell', value: '42 min' }, { label: 'Peak Zone', value: summary.peak_zone || '—' }]}
-                />
-                <StatCard
-                    icon={Brain} color="green" title="AI Projected Demand" value={summary.total_predicted ? summary.total_predicted.toLocaleString() : '—'} statusText={isTimeTravelActive ? "Forecast Mode" : "Predictive"} statusColor="text-blue-500"
-                    details={[{ label: 'Accuracy', value: '96.2%' }, { label: 'Model', value: 'XGBoost v2' }]}
                 />
                 <StatCard
                     icon={Shield} color="orange" title={isTimeTravelActive ? "Forecast Risk Index" : "Campus Risk Index"} value={summary.avg_cri || '—'} statusText={isTimeTravelActive ? "Projected" : (summary.max_cri >= 70 ? 'High Risk' : summary.max_cri >= 50 ? 'Moderate' : 'Stable')} statusColor={summary.max_cri >= 70 ? 'text-red-500' : summary.max_cri >= 50 ? 'text-amber-500' : 'text-green-500'}
