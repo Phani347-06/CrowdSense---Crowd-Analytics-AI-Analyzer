@@ -14,6 +14,8 @@ import time
 import math
 import threading
 import os
+from dotenv import load_dotenv
+load_dotenv()
 import requests
 from pymongo import MongoClient
 import json
@@ -33,15 +35,19 @@ automation_agent = AutomationAgent()
 
 # MongoDB Setup
 try:
-    mongo_client = MongoClient('mongodb://localhost:27017/', serverSelectionTimeoutMS=2000)
-    db = mongo_client['crowdsense']
+    mongo_uri = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
+    client = MongoClient(mongo_uri, serverSelectionTimeoutMS=2000)
+    db = client['crowdsense']
+    
+    # Collections
     trend_collection = db['trends']
     log_collection = db['raw_logs'] 
     users_collection = db['users'] 
-    registrations_collection = db['registrations'] # New: Event registrations
-    alert_history_collection = db['alert_history'] # New: Manual alerts archive
+    registrations_collection = db['registrations']
+    alert_history_collection = db['alert_history']
+    
     # Check connection
-    mongo_client.server_info()
+    client.server_info()
     print("🍃 MongoDB connected successfully!")
     USE_MONGO = True
     
