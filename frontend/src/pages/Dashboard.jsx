@@ -489,7 +489,7 @@ const Dashboard = () => {
                                 <div className="text-white text-3xl font-bold font-mono">{peakInfo.hour}:00</div>
                             </div>
                             <div>
-                                <div className="text-slate-500 text-xs uppercase font-black tracking-widest mb-3">AI Confidence</div>
+                                <div className="text-slate-500 text-xs uppercase font-black tracking-widest mb-3">Model Performance</div>
                                 <div className="text-white text-3xl font-bold font-mono">98.2<span className="text-sm text-slate-500 ml-1">%</span></div>
                             </div>
                             <div>
