@@ -12,3 +12,6 @@ gunicorn
 fastapi
 gunicorn
 python-dotenv
+pymongo
+dnspython
+certifi
