@@ -258,7 +258,7 @@ const Prediction = () => {
                         </div>
                         <div>
                             <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Model Performance</p>
-                            <h3 className="text-2xl font-bold text-green-500">{liveData ? '90.2%' : '—'}</h3>
+                            <h3 className="text-2xl font-bold text-green-500">{liveData ? '94%' : '—'}</h3>
                         </div>
                     </div>
                 </div>
