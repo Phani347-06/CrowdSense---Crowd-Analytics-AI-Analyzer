@@ -719,7 +719,7 @@ def predict_with_model(zone_id, config, hour, weekday, is_weekend, rssi, current
         now = datetime.datetime.now()
         tf = get_time_factor(now.hour, now.minute, now.weekday())
         zm = get_zone_modifier(config.get("type"), now.hour, now.minute)
-        return int(config["base_density"] * tf * zm * random.uniform(0.9, 1.15))
+        return int(config["base_density"] * tf * zm * random.uniform(0.88, 1.12))
 
     le_name = config["le_name"]
 
@@ -732,7 +732,7 @@ def predict_with_model(zone_id, config, hour, weekday, is_weekend, rssi, current
             now = datetime.datetime.now()
             tf = get_time_factor(now.hour, now.minute, now.weekday())
             zm = get_zone_modifier(config.get("type"), now.hour, now.minute)
-            return int(config["base_density"] * tf * zm * random.uniform(0.9, 1.15))
+            return int(config["base_density"] * tf * zm * random.uniform(0.88, 1.12))
 
         # Build feature vector
         prev_density = zone_hist[-1] if len(zone_hist) >= 1 else current_density
@@ -757,17 +757,21 @@ def predict_with_model(zone_id, config, hour, weekday, is_weekend, rssi, current
         prediction = max(0, min(int(prediction), int(config["capacity"] * 1.3)))
         
         # ── Post-Processing: Dampen & Blend ──
-        # The ML model was trained on higher-density data. 
-        # Blend it with current actual to keep it realistic.
-        # Weight: 70% actual context, 30% raw ML prediction
+        # Reduce the weight of current_density to allow the model's own predictions 
+        # to manifest more naturally, adding a small noise factor to simulate 
+        # realistic model error/variance (~4-6% deviation).
         now = datetime.datetime.now()
         time_factor = get_time_factor(now.hour, now.minute, now.weekday())
         
-        # Scale prediction by time factor (night predictions should be low)
+        # Scale prediction by time factor
         scaled_prediction = prediction * max(time_factor, 0.15)
         
-        # Blend with current density for smoothness
-        blended = (current_density * 0.7) + (scaled_prediction * 0.3)
+        # Adjust blending: 60% actual, 40% prediction (less biased towards current state)
+        blended = (current_density * 0.6) + (scaled_prediction * 0.4)
+        
+        # Add random noise for realistic variance (±4-8%)
+        error_factor = random.uniform(0.92, 1.08)
+        blended = blended * error_factor
         
         # Final clamp
         blended = max(0, min(int(blended), int(config["capacity"] * 1.2)))
