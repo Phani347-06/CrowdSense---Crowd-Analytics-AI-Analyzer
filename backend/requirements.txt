@@ -5,13 +5,10 @@ scikit-learn
 pandas
 numpy
 xgboost
-pymongo
+pymongo[srv]
+certifi
 dnspython
 requests
 gunicorn
 fastapi
-gunicorn
 python-dotenv
-pymongo
-dnspython
-certifi
