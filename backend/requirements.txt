@@ -9,3 +9,5 @@ pymongo
 dnspython
 requests
 gunicorn
+fastapi
+uvicorn[standard]
