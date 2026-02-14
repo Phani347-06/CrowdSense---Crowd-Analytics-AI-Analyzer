@@ -35,10 +35,6 @@ const Header = ({ setSearchQuery }) => {
                         SEARCH
                     </button>
                 </form>
-                <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-800 text-sm font-semibold text-gray-600 dark:text-gray-300 transition-colors shadow-sm">
-                    <Download className="w-4 h-4" />
-                    <span>Export</span>
-                </button>
             </div>
         </header>
     );
